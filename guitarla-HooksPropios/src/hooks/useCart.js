@@ -1,9 +1,7 @@
-import Header from "./Components/Header";
-import Guitar from "./Components/Guitar";
-import { db } from "./data/db.js";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { db } from "../data/db.js";
 
-function App() {
+export const useCart = () => {
   // Función para inicializar el carrito desde localStorage
 
   const initialCart = () => {
@@ -82,41 +80,27 @@ function App() {
     setCart([]);
   }
 
-  return (
-    <>
-      <Header
-        cart={cart}
-        removeFromCart={removeFromCart}
-        increaseQuantity={increaseQuantity}
-        decreaseQuantity={decreaseQuantity}
-        cleanCart={cleanCart}
-      />
+  // Memoriza si el carrito está vacío.
+  // Solo recalcula cuando cambia el arreglo 'cart'.
+  // Retorna 'true' si el carrito no tiene elementos, 'false' en caso contrario.
+  const isEmpty = useMemo(() => cart.length === 0, [cart]);
 
-      <main className="container-xl mt-5">
-        <h2 className="text-center">Nuestra Colección</h2>
-
-        <div className="row mt-5">
-          {data.map((guitar) => (
-            <Guitar
-              key={guitar.id}
-              guitar={guitar}
-              setCart={setCart}
-              cart={cart}
-              addToCart={addToCart}
-            />
-          ))}
-        </div>
-      </main>
-
-      <footer className="bg-dark mt-5 py-5">
-        <div className="container-xl">
-          <p className="text-white text-center fs-4 mt-4 m-md-0">
-            GuitarLA - Todos los derechos Reservados
-          </p>
-        </div>
-      </footer>
-    </>
+  // Esta función calcula el total del carrito sumando el precio total de cada producto (cantidad * precio).
+  // Utiliza el método reduce para recorrer el arreglo 'cart' y acumular el valor total, comenzando desde 0.
+  const cartToltal = useMemo(
+    () => cart.reduce((total, item) => total + item.price * item.quantity, 0),
+    [cart]
   );
-}
 
-export default App;
+  return {
+    data,
+    cart,
+    addToCart,
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    cleanCart,
+    isEmpty,
+    cartToltal,
+  };
+};

@@ -1,14 +1,7 @@
 import React, { useMemo } from "react";
 
-export default function Header({ cart, removeFromCart, increaseQuantity, decreaseQuantity, cleanCart }) {
-  // Memoriza si el carrito está vacío.
-  // Solo recalcula cuando cambia el arreglo 'cart'.
-  // Retorna 'true' si el carrito no tiene elementos, 'false' en caso contrario.
-  const isEmpty = useMemo(() => cart.length === 0, [cart]);
-
-  // Esta función calcula el total del carrito sumando el precio total de cada producto (cantidad * precio).
-  // Utiliza el método reduce para recorrer el arreglo 'cart' y acumular el valor total, comenzando desde 0.
-  const cartToltal = useMemo(() => cart.reduce((total, item) => total + (item.price * item.quantity), 0), [cart]);
+export default function Header({ cart, removeFromCart, increaseQuantity, decreaseQuantity, cleanCart, isEmpty, cartToltal }) {
+  
 
   return (
     <header className="py-5 header">
